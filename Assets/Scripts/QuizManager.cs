@@ -38,7 +38,7 @@ public class QuizManager : MonoBehaviour {
     void Start() {
         feedbackText.text = string.Empty;
         nextButton.interactable = false;
-        restartButton.gameObject.SetActive(false);  // Hide restart until finish
+        restartButton.gameObject.SetActive(false);
 
         trueButton.onClick.AddListener(() => OnAnswer("True"));
         falseButton.onClick.AddListener(() => OnAnswer("False"));
@@ -49,7 +49,7 @@ public class QuizManager : MonoBehaviour {
     }
 
     IEnumerator FetchQuestions() {
-        string url = "https://opentdb.com/api.php?amount=10&type=boolean";
+        string url = "https://opentdb.com/api.php?amount=10&category=15&type=boolean";
         using (UnityWebRequest request = UnityWebRequest.Get(url)) {
             yield return request.SendWebRequest();
 
@@ -71,13 +71,15 @@ public class QuizManager : MonoBehaviour {
             nextButton.interactable = false;
             trueButton.interactable = true;
             falseButton.interactable = true;
+            Debug.Log(q); 
         } else {
             questionText.text = "Quiz ended!";
             feedbackText.text = $"Your score: {score}/{questions.Count}";
+            Debug.Log($"Quiz ended with score: {score}/{questions.Count}");
             trueButton.gameObject.SetActive(false);
             falseButton.gameObject.SetActive(false);
             nextButton.gameObject.SetActive(false);
-            restartButton.gameObject.SetActive(true);  // Show restart button
+            restartButton.gameObject.SetActive(true);
         }
     }
 
@@ -87,10 +89,14 @@ public class QuizManager : MonoBehaviour {
         falseButton.interactable = false;
 
         if (playerAnswer == current.correct_answer) {
+             Debug.Log("Player Answer: " + playerAnswer);
             feedbackText.text = "Correct!";
             score++;
+            Debug.Log("The Answer was Correct");
         } else {
+            Debug.Log("Player Answer: " + playerAnswer);
             feedbackText.text = "Wrong!";
+            Debug.Log("The Answer was Wrong");
         }
 
         nextButton.interactable = true;
@@ -107,7 +113,7 @@ public class QuizManager : MonoBehaviour {
         trueButton.gameObject.SetActive(true);
         falseButton.gameObject.SetActive(true);
         nextButton.gameObject.SetActive(true);
-        restartButton.gameObject.SetActive(false);  // Hide again until next end
+        restartButton.gameObject.SetActive(false); 
         StartCoroutine(FetchQuestions());
     }
 }
